@@ -6,23 +6,41 @@ const {getPlayerById} = require('./modules/getPlayerById.js');
 const { updatePlayer } = require("./modules/updatePlayer.js");
 const { deletePlayer } = require("./modules/deletePlayer.js");
 const {getAllPlayers} = require('./modules/getAllPlayers.js');
+//const {playerRouter} = require('./playerRouter.js');
 
 
 PORT = 5005;
 app.use(express.json());
-//app.use('/assets',express.static(__dirname + '/public'));
-let players = JSON.parse(fs.readFileSync("./players.json", 'utf-8'));
+const playerRouter = express.Router();
+app.use(playerRouter);
 
-app.get("/api/v1/players", getAllPlayers)
+const getPlayersData = (res, req, next) =>{
+    players = JSON.parse(fs.readFileSync("./players.json", 'utf-8'));
+    next();
+}
+//Optional
+//const getPlayersData = (res, req, next)=>{
+  //  const players = await readFileData();
+  //req.players;
+  //next();
+//}
 
-app.post("/api/v1/players", createPlayer)
 
-app.get("/api/v1/players/:id",getPlayerById )
 
-app.patch("/api/v1/players/:id",updatePlayer)
+playerRouter.get("/api/v1/players", getPlayersData, getAllPlayers)
 
-app.delete("/api/v1/players/:id" ,deletePlayer)
+playerRouter.post("/api/v1/players", getPlayersData, createPlayer)
+
+playerRouter.get("/api/v1/players/:id", getPlayersData,getPlayerById )
+
+playerRouter.patch("/api/v1/players/:id", getPlayersData,updatePlayer)
+
+playerRouter.delete("/api/v1/players/:id" , getPlayersData,deletePlayer)
 
 app.listen(PORT, () => {
     console.log(`server is running in PORT ${PORT}`);
 })
+
+module.exports = {
+    playerRouter
+}

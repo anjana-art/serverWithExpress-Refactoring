@@ -1,5 +1,8 @@
+const fs = require("fs");
 let updatePlayer =(req, res)=>{
       //updated player by id
+      //let players = JSON.parse(fs.readFileSync("./players.json", "utf-8"));
+
       const id = req.params.id
       const player = players.find(el => el.id === id);
       if(player === undefined){
